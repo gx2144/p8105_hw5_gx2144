@@ -57,4 +57,27 @@ mergedata = map(names, read_data) %>%
   select(Group, ID, everything())
  
 ```
+ 
+## Make a spaghetti plot
+```{r}
+tidy_mergedata = 
+  pivot_longer(
+    mergedata, 
+    week_1:week_8,
+    names_to = "Week", 
+    names_prefix = "week_",
+    values_to = "Value") %>% 
+  mutate(
+    Group = recode(Group, con = "Control Group", exp = "Experiment Group")
+  )
+  
+ggplot(tidy_mergedata,aes(x = Week,y = Value))+
+    geom_line(aes(group = ID, color = ID)) + 
+    theme_set(theme_minimal() + 
+    theme(legend.position = "bottom"))+       
+    facet_grid(.~Group)+
+  labs(
+    title = "Spaghetti Plot Showing Observations On Each Subject Over Time"
+  )
+```
   
