@@ -81,3 +81,30 @@ ggplot(tidy_mergedata,aes(x = Week,y = Value))+
   )
 ```
   
+  
+##Problem 3
+
+```{r}
+sim_regression = function(n, beta0 = 2, beta1 = 0) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = 0, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 50)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data) %>% 
+  broom::tidy()
+  
+  tibble(
+    beta1_hat = pull(ls_fit,estimate)[2],
+    p_value = pull(ls_fit,estimate)[2]
+  )
+}
+
+sim_results = 
+  rerun(10000, sim_regression(30, 2, 0)) %>% 
+  bind_rows()
+```
+
+
+
