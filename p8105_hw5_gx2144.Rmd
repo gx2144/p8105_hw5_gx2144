@@ -85,11 +85,11 @@ ggplot(tidy_mergedata,aes(x = Week,y = Value))+
 ##Problem 3
 
 ```{r}
-sim_regression = function(n, beta0 = 2, beta1 = 0) {
+sim_regression = function(beta1) {
   
   sim_data = tibble(
-    x = rnorm(n, mean = 0, sd = 1),
-    y = beta0 + beta1 * x + rnorm(n, 0, 50)
+    x = rnorm(30, mean = 0, sd = 1),
+    y = 2 + beta1 * x + rnorm(30, 0, 50)
   )
   
   ls_fit = lm(y ~ x, data = sim_data) %>% 
@@ -97,14 +97,74 @@ sim_regression = function(n, beta0 = 2, beta1 = 0) {
   
   tibble(
     beta1_hat = pull(ls_fit,estimate)[2],
-    p_value = pull(ls_fit,estimate)[2]
+    p_value = pull(ls_fit,p.value)[2]
   )
 }
 
 sim_results = 
-  rerun(10000, sim_regression(30, 2, 0)) %>% 
+  rerun(10000, sim_regression(0)) %>% 
   bind_rows()
 ```
 
 
+### Dataset When beta = 1-6
+```{r}
+
+simulate_n_regressions = 
+  function(n_runs = 10000,beta1) 
+  {rerun(n_runs, sim_regression(beta1)) %>% 
+    bind_rows()
+  }
+
+
+sim_results2 = 
+  tibble(beta1 = c(1, 2, 3, 4, 5, 6)) %>% 
+  mutate(
+    estimate_dfs = map(.x = beta1, ~simulate_n_regressions(n_runs = 10000, beta1 = .x))
+  ) %>% 
+  unnest %>% 
+  unnest
+```
+
+
+### Make a Plot reporting the proportion of times the null was rejected 
+```{r}
+plot1 = sim_results2 %>% 
+  filter(p_value < 0.05) %>% 
+  group_by(beta1) %>% 
+  summarise(
+    power = n()/10000
+  ) 
+
+ggplot(plot1, aes(x = beta1,y = power))+
+  geom_point()+
+  geom_line()
+
+```
+
+
+### Plot of Average of Estimated Beta and True value of Beta
+```{r}
+plot2 = sim_results2 %>%
+  group_by(beta1) %>% 
+  summarize(
+    mean1 = mean(beta1_hat)
+  )
+
+plot3 = sim_results2 %>% 
+  filter(p_value < 0.05) %>% 
+  group_by(beta1) %>% 
+  summarize(
+    mean2 = mean(beta1_hat)
+  )
+
+binddata = left_join(plot2, plot3)
+
+ggplot(binddata, aes(x = beta1))+
+  geom_point(aes(y = mean1))+
+  geom_line(aes(y = mean1, color = "red"))+
+  geom_point(aes(y = mean2))+
+  geom_line(aes(y = mean2,color = "blue"))
+
+```
 
