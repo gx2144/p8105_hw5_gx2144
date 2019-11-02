@@ -138,10 +138,17 @@ plot1 = sim_results2 %>%
 
 ggplot(plot1, aes(x = beta1,y = power))+
   geom_point()+
-  geom_line()
+  geom_line()+
+  labs(
+    title = "Association Between True Beta 1 and Power",
+    x = "True Beta 1",
+    y = "Power"
+  )
 
 ```
 
+* comment
+From the plot we can see that Power increases as True Beta1 increases.There is a positive relationship between True Beta1 and Power. 
 
 ### Plot of Average of Estimated Beta and True value of Beta
 ```{r}
@@ -164,7 +171,13 @@ ggplot(binddata, aes(x = beta1))+
   geom_point(aes(y = mean1))+
   geom_line(aes(y = mean1, color = "red"))+
   geom_point(aes(y = mean2))+
-  geom_line(aes(y = mean2,color = "blue"))
+  geom_line(aes(y = mean2,color = "blue"))+
+  scale_colour_discrete(labels = c('Average Estimate When Null was rejected','Average Estimate '))+
+  labs(
+    title = "Association Between Average Estimate Beta 1 and True Beta 1",
+    x = "True Beta 1",
+    y = "Average Estimate Beta 1"
+  )
 
 ```
 
