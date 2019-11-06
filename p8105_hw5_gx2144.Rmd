@@ -44,8 +44,7 @@ check = function(x) {
 }
 
 map(iris_with_missing, check) %>% 
-bind_cols() %>% 
-knitr::kable(digits = 3)
+bind_cols() 
 
 ```
 
@@ -72,7 +71,7 @@ mergedata = map(names, read_data) %>%
     ) %>% 
   select(Group, ID, everything()) 
  
-knitr::kable(mergedata, digits = 3)
+knitr::kable(mergedata, digits = 3) 
 ```
  
 ### Make a spaghetti plot
