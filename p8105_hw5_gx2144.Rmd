@@ -44,7 +44,8 @@ check = function(x) {
 }
 
 map(iris_with_missing, check) %>% 
-bind_cols()
+bind_cols() %>% 
+knitr::kable(digits = 3)
 
 ```
 
@@ -69,9 +70,9 @@ mergedata = map(names, read_data) %>%
   mutate(
     ID = str_remove(ID, ".csv")
     ) %>% 
-  select(Group, ID, everything())
+  select(Group, ID, everything()) 
  
-mergedata
+knitr::kable(mergedata, digits = 3)
 ```
  
 ### Make a spaghetti plot
