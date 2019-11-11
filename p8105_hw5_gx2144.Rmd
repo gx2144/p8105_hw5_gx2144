@@ -99,7 +99,7 @@ ggplot(tidy_mergedata,aes(x = Week,y = Value))+
 
 * Comment:
 
-The experiment group has higher observation value than the control group on average. Overall, values in experiment group got higher as week went by while values in control group got lower while week went by. 
+The experiment group has higher observation value than the control group on average. Overall, values in experiment group got higher as week went by while values in control group got lower as week gone by. 
   
 ## Problem 3
 
