@@ -69,13 +69,12 @@ mergedata = map(names, read_data) %>%
   mutate(
     ID = str_remove(ID, ".csv")
     ) %>% 
-  select(Group, ID, everything()) 
- 
-knitr::kable(mergedata, digits = 3) 
-```
- 
-### Make a spaghetti plot
-```{r}
+  select(Group, ID, everything()) %>% 
+   mutate(
+    Group = recode(Group, con = "Control Group", exp = "Experiment Group")
+  )
+ knitr::kable(mergedata, digits = 3) 
+
 tidy_mergedata = 
   pivot_longer(
     mergedata, 
@@ -86,7 +85,13 @@ tidy_mergedata =
   mutate(
     Group = recode(Group, con = "Control Group", exp = "Experiment Group")
   )
-  
+tidy_mergedata
+## Not sure whether it should be pivot longer or not, so two plots are made here. 
+
+```
+ 
+### Make a spaghetti plot
+```{r}
 ggplot(tidy_mergedata,aes(x = Week,y = Value))+
     geom_line(aes(group = ID, color = ID)) + 
     theme_set(theme_minimal() + 
@@ -99,7 +104,7 @@ ggplot(tidy_mergedata,aes(x = Week,y = Value))+
 
 * Comment:
 
-The experiment group has higher observation value than the control group on average. Overall, values in experiment group got higher as week went by while values in control group got lower as week gone by. 
+The experiment group has higher observation value than the control group on average. Overall, values in experiment group got higher as week went by while values in control group fluctuated as week gone by. 
   
 ## Problem 3
 
@@ -172,8 +177,7 @@ ggplot(plot1, aes(x = beta1,y = power))+
 
 * Comment:
 
-From the plot we can see that Power increases as True β1 increases.There is a positive relationship between True β1 and Power. Since H: β1 = 0 and Power =  Φ (Z+ (μ0-μ1)/σ * √n),we can see that as effect size μ0-μ1 increases, power increases. 
-
+From the plot we can see that Power increases as True β1 increases. There is a positive relationship between True β1 and Power. Since H0: β1 = 0, H1: β1 = {1,2,3,4,5,6,} and Power = Φ (Z+ (β1 - 0)/σ * √n),we can see that as effect size β1 - 0 increases, power increases.
 
 ### Plot of Average of Estimated Beta and True value of Beta
 ```{r}
@@ -211,4 +215,4 @@ ggplot(binddata, aes(x = beta1))+
 
 * Comment：
 
-According to graph above, the slope of the yellow line which denotes the relationship between the true β1 and average estimate β1 with compeleted data equals to 1. The sample average of estimated β1 for which the null is rejected does not equal to the true value of β1 when β1 is 1, 2 and 3 but close to that when β1 is small(β1 = 0) or β1 is big(β1 = 4, 5 and 6).The reason behind this is that when true β1 is small, power is small, which means that proportion of times the null was rejected is small. So average of estimated β1 across tests for which the null is rejected filtered β1 = 0, making estimated β1 larger than the average estimate β1 with compeleted data. However, when β1 gets bigger, effect size gets bigger, power gets bigger, proportion of times the null was rejected gets bigger. This leads to the fact that the proportion of β1 = 0 gets smaller so that average of estimated β1 across tests for which the null is rejected gets closer to average estimate β1 with compeleted data when true β1 gets bigger.
+According to graph above, the slope of the yellow line which denotes the relationship between the true β1 and average estimate β1 with completed data equals to 1. The sample average of estimated β1 for which the null is rejected does not equal to the true value of β1 when β1 is 1, 2 and 3 but close to that when β1 is small(β1 = 0) or β1 is big(β1 = 4, 5 and 6).The reason behind this is that when true β1 is small, power is small, which means that proportion of times the null was rejected is small. So average of estimated β1 across tests for which the null is rejected filtered β1 = 0, making estimated β1 larger than the average estimate β1 with completed data. However, when β1 gets bigger, effect size gets bigger, power gets bigger, proportion of times the null was rejected gets bigger. This leads to the fact that the proportion of β1 = 0 gets smaller so that average of estimated β1 across tests for which the null is rejected gets closer to average estimate β1 with completed data when true β1 gets bigger.
